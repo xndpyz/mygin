@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"xb.gin/config"
+	"xb.gin/middleware"
 )
 
 func main() {
@@ -12,6 +13,7 @@ func main() {
 	XB_DB := config.InitDB()
 	defer XB_DB.Close()
 
+	r.Use(middleware.Demo())
 	r.GET("/index", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"success": "项目初始化",
