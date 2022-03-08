@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"xb.gin/model"
 )
 
 func InitDB() *gorm.DB {
@@ -11,5 +12,6 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
+	db.AutoMigrate(model.User{})
 	return db
 }

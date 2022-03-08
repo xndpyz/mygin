@@ -1,21 +1,14 @@
-package router
+package config
 
 import (
 	"github.com/gin-gonic/gin"
-	"xb.gin/api"
-	"xb.gin/middleware"
+	"xb.gin/controller"
 )
 
-func InitRouter() *gin.Engine {
-	r := gin.Default()
-	r.Use(middleware.Demo())
-	r.GET("/index", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"success": "项目初始化",
-		})
-	})
+func InitRouter(r *gin.Engine) {
+	//r.Use(middleware.Demo())
+	r.GET("/index", controller.Index)
+	r.GET("/student/:ID", controller.GetStudent)
 
-	r.GET("/demo/student/:ID", api.GetStudent)
-
-	return r
+	r.POST("/auth/register", controller.Register)
 }
