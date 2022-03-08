@@ -11,4 +11,5 @@ func InitRouter(r *gin.Engine) {
 	r.GET("/student/:ID", controller.GetStudent)
 
 	r.POST("/auth/register", controller.Register)
+	r.POST("/auth/login", controller.Login)
 }

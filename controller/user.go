@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"net/http"
 	"xb.gin/global"
 	"xb.gin/model"
 )
@@ -17,6 +18,11 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
+	if len(password) < 6 {
+		ctx.JSON(400, gin.H{"mag": "密码不能少于6位"})
+		return
+	}
+
 	if len(phone) != 11 {
 		ctx.JSON(400, gin.H{"msg": "手机号必须为11位"})
 		return
@@ -26,7 +32,11 @@ func Register(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"msg": "手机号已存在"})
 		return
 	}
-
+	//hasedPassWord, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	//if err != nil {
+	//	ctx.JSON(http.StatusServiceUnavailable, gin.H{"msg": "密码加密错误"})
+	//	return
+	//}
 	newUser := model.User{
 		Name:     name,
 		Phone:    phone,
@@ -43,4 +53,31 @@ func isPhoneExit(phone string, db *gorm.DB) bool {
 		return true
 	}
 	return false
+}
+
+func Login(ctx *gin.Context) {
+	phone := ctx.PostForm("phone")
+	password := ctx.PostForm("password")
+
+	var user model.User
+	global.XB_DB.Where("phone = ?", phone).First(&user)
+	if user.ID == 0 {
+		ctx.JSON(400, gin.H{"msg": "用户不存在"})
+		return
+	}
+
+	//if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+	//	ctx.JSON(http.StatusBadRequest, gin.H{"msg": "密码错误"})
+	//}
+	if user.Password != password {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"msg": "密码错误"})
+		return
+	}
+
+	token := "tmp"
+
+	ctx.JSON(200, gin.H{
+		"msg":  "登陆成功",
+		"data": token,
+	})
 }
