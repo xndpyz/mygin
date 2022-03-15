@@ -11,7 +11,7 @@ func main() {
 	global.XB_DB = config.InitDB()
 	config.InitRouter(r)
 
-	defer global.XB_DB.Close()
+	//defer global.XB_DB.Close()
 
 	panic(r.Run(":7777"))
 }
